@@ -4,6 +4,7 @@ Kicking around on a piece of ground in your home town
 Waiting for someone or something to show you the way
 
 Time - Pink Floyd */
+CAKE.DefaultTime = "1 1 2011 1"
 
 
 function CAKE.InitTime() -- Load the time from a text file or default value, this occurs on gamemode initialization.
@@ -48,35 +49,37 @@ function CAKE.SaveTime()
 end
 
 function CAKE.SendTime()
-
-	local nHours = string.format("%02.f", math.floor(CAKE.ClockMins / 60));
-	local nMins = string.format("%02.f", math.floor(CAKE.ClockMins - (nHours*60)));
 	
-	if(tonumber(nHours) > 12) then 
-	
-		nHours = nHours - 12
-		timez = "PM";
+	if CAKE.ClockYear then
+		local nHours = string.format("%02.f", math.floor(CAKE.ClockMins / 60));
+		local nMins = string.format("%02.f", math.floor(CAKE.ClockMins - (nHours*60)));
 		
-	else
-	
-		timez = "AM";
+		if(tonumber(nHours) > 12) then 
 		
-	end
-	
-	if(tonumber(nHours) == 0) then
-	
-		nHours = 12
+			nHours = nHours - 12
+			timez = "PM";
+			
+		else
 		
+			timez = "AM";
+			
+		end
+		
+		if(tonumber(nHours) == 0) then
+		
+			nHours = 12
+			
+		end
+		
+		if string.sub(tostring(nHours),1,1) == "0" then
+			nHours = " " ..string.sub(tostring(nHours), 2, 2)
+		end
+		
+		SetGlobalString("time", CAKE.ClockMonth.. "/" .. CAKE.ClockDay .. "/" .. CAKE.ClockYear.. " - " .. nHours .. ":" .. nMins .. timez)
 	end
-	
-	if string.sub(tostring(nHours),1,1) == "0" then
-		nHours = " " ..string.sub(tostring(nHours), 2, 2)
-	end
-	
-	SetGlobalString("time", CAKE.ClockMonth .. "/" .. CAKE.ClockDay .. "/" .. CAKE.ClockYear .. " - " .. nHours .. ":" .. nMins .. timez)
 	
 end
 
-hook.Add( "Initialize", "TiramisuInitTime", function()
+function PLUGIN.Init()
 	CAKE.InitTime()
-end)
+end
