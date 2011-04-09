@@ -45,6 +45,8 @@ function CAKE.SetClothing( ply, body, helmet, glove )
 	
 	if !ply:ItemHasFlag( body, "nogloves" ) then
 		glove = body
+	else
+		glove = "none"
 	end
 	if !ply:HasItem( helmet ) or helmet == "none" then
 		helmet = CAKE.GetCharField( ply, "model" )
@@ -231,10 +233,11 @@ local function SpawnClothingHook( ply )
 	--This is a kinda ridiculous override I use for gear that uses bonemerge. It's the only way to allow gear with bones to be rendered manually.
 	if !ply.BonemergeGearEntity or ply.BonemergeGearEntity:GetParent() != ply then
 		ply.BonemergeGearEntity = ents.Create( "prop_physics" )
-		ply.BonemergeGearEntity:SetPos( ply:GetPos() + Vector( 0, 0, 80 ) )
+		ply.BonemergeGearEntity:SetPos( ply:GetPos() - Vector( 0, 0, 80 ) )
 		ply.BonemergeGearEntity:SetAngles( ply:GetAngles() )
 		ply.BonemergeGearEntity:SetModel("models/Tiramisu/blank_model.mdl")
 		ply.BonemergeGearEntity:SetParent( ply )
+		ply.BonemergeGearEntity:SetNoDraw( true )
 		ply.BonemergeGearEntity:SetSolid( SOLID_NONE )
 		ply.BonemergeGearEntity:Spawn()
 	end
@@ -246,7 +249,7 @@ local function SpawnClothingHook( ply )
 	end
 
 end
-hook.Add( "PlayerSetModel", "OldenSpawnClothing", SpawnClothingHook )
+hook.Add( "PlayerSetModel", "TiramisuSpawnClothing", SpawnClothingHook )
 
 local function ccSetClothing( ply, cmd, args )
 	
