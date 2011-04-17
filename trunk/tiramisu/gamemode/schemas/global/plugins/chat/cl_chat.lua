@@ -1,4 +1,7 @@
 datastream.Hook( "TiramisuAddToChat", function( handler, id, encoded, decoded )
+    if !decoded.font then
+        decoded.font = CAKE.ChatFont
+    end
     if decoded.channel == "IC" then
         CAKE.Chatbox:AddLine(  "<color=135,209,255,255><font=" .. decoded.font .. ">" .. decoded.text .. "</font></color>", decoded.channel )
     else
@@ -10,13 +13,14 @@ datastream.Hook( "TiramisuAddToChat", function( handler, id, encoded, decoded )
     end
 end)
 
+--Same as above, it is only being sent as a different datastream for it to print properly on console (IE, so that the </color> part is not printed)
 datastream.Hook( "TiramisuAddToOOC", function( handler, id, encoded, decoded )
     
     local color = decoded.color
     local playername = decoded.name
     local text = decoded.text
 
-    CAKE.Chatbox:AddLine(  "<font=ChatFont><color=white>[OOC]</color><color=" .. tostring( color.r ) .. "," .. tostring( color.g ) .. "," .. tostring( color.b ) .. ">".. playername .. "</color><color=white>:" .. text .. "</color></font>", "OOC" )
+    CAKE.Chatbox:AddLine(  "<font=" .. CAKE.ChatFont .. "><color=white>[OOC]</color><color=" .. tostring( color.r ) .. "," .. tostring( color.g ) .. "," .. tostring( color.b ) .. ">".. playername .. "</color><color=white>:" .. text .. "</color></font>", "OOC" )
 
     text = "[OOC]" .. playername .. ": " .. text
 
@@ -24,17 +28,6 @@ datastream.Hook( "TiramisuAddToOOC", function( handler, id, encoded, decoded )
         MsgN(string.sub( text, i * 255 + 1, i * 255 + 255 ) )
     end
 end)
-
-/*
-function AddOOCLine( handler, id, encoded, decoded )
-
-	local text = decoded.text
-	local playername = decoded.playername
-	local color = decoded.color
-	chat.AddText( Color(255,255,255,255), "[OOC]", color, playername, Color(255,255,255,255), " :", Color(255,255,255,255), text )
- 
-end
-datastream.Hook( "AddOOCLine", AddOOCLine );*/
 
 local matBlurScreen = Material( "pp/blurscreen" ) 
 local PANEL = {}
@@ -45,16 +38,7 @@ local PANEL = {}
 function PANEL:Init()
  
         self:SetFocusTopLevel( true )
-        
-        /*
-        self.btnClose = vgui.Create( "DSysButton", self )
-        self.btnClose:SetType( "close" )
-        self.btnClose.DoClick = function ( button ) self:Close() end
-        self.btnClose.PaintOver = function()
-            self.btnClose:SetVisible( self.Open )
-        end
-        self.btnClose:SetDrawBorder( false )
-        self.btnClose:SetDrawBackground( false )*/
+
         self.Channels = {}
         self.Color = CAKE.BaseColor
         self:ShowCloseButton( false )
@@ -114,6 +98,7 @@ function PANEL:Init()
  
 end
 
+--Adds a tab to the chatbox. Can be done while the chatbox is open.
 function PANEL:AddChannel( name, description )
 
     if !self.Channels[ name ] then
@@ -146,6 +131,7 @@ function PANEL:AddChannel( name, description )
 
 end
 
+--Adds a line to a particular channel. If no channel is specified it simply becomes global.
 function PANEL:AddLine( text, channel )
 
     local label = MarkupLabel( text, self.Width - 25 )
@@ -181,6 +167,7 @@ end
 /*---------------------------------------------------------
  
 ---------------------------------------------------------*/
+--Doesn't actually close the chatbox, simply hides it.
 function PANEL:Close()
 
     self.Open = false
@@ -211,6 +198,7 @@ end
 /*---------------------------------------------------------
  
 ---------------------------------------------------------*/
+--Calculations to determine which lines fade out.
 local linetbl = {}
 function PANEL:Think()
     if self.Lines and !self.Open then
@@ -233,6 +221,7 @@ local x, y
 local lastpos
 local color
 
+--Handles the whole drawing part.
 function PANEL:Paint()
 
     if !self.Alpha then
@@ -291,11 +280,7 @@ end
 
 function PANEL:PerformLayout()
 end
- 
- 
-/*---------------------------------------------------------
- 
----------------------------------------------------------*/
+
 function PANEL:IsActive()
  
         if ( self:HasFocus() ) then return true end

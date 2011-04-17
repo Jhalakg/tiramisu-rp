@@ -211,6 +211,7 @@ function ccSpawnChar( ply, cmd, args )
 end
 concommand.Add( "rp_spawnchar", ccSpawnChar );
 
+
 function ccReady( ply, cmd, args )
 
 	if( ply.Ready == false ) then
@@ -238,7 +239,7 @@ function ccReady( ply, cmd, args )
 		high = high + 1;
 		ply:SetNWString( "uid", tostring(high) );
 		
-		timer.Simple( 1, function()
+		timer.Simple( 0.1, function()
 			for k, v in pairs( PlyCharTable ) do -- Send them all their characters for selection
 		
 				umsg.Start( "ReceiveChar", ply );
@@ -253,6 +254,7 @@ function ccReady( ply, cmd, args )
 			ply:SetNWInt( "charactercreate", 1 )
 			
 			umsg.Start( "characterselection", ply );
+				umsg.Bool( ply.FirstTimeJoining ) --This activates the intro if this is your first spawn ever. 
 			umsg.End( );
 		end)
 		
