@@ -101,8 +101,8 @@ hook.Add( "PlayerLoadout", "TiramisuWeaponsLoadout", function( ply )
 				ply:Give( v )
 			end
 			for k, v in pairs( CAKE.GetCharField( ply, "inventory")) do
-				if string.match( v, "weapon_" ) then
-					ply:Give( v )
+				if string.match( v[1], "weapon_" ) then
+					ply:Give( v[1] )
 				end
 			end
 			ply:RemoveAllAmmo( )
