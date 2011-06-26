@@ -1,10 +1,14 @@
 AddCSLuaFile( "shared.lua" )
 include( "shared.lua" )
-SWEP.Weight				= 5
+SWEP.Weight				= 10
 SWEP.AutoSwitchTo		= false
 SWEP.AutoSwitchFrom		= false
 
 function SWEP:Reload()
+end
+
+function SWEP:CanPrimaryAttack()
+	return false
 end
 
 function SWEP:PrimaryAttack()
